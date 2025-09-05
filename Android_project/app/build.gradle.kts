@@ -40,4 +40,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    //ML kit
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+
+    //GSON for json generate
+    implementation("com.google.code.gson:gson:2.10.1")
+
 }
