@@ -25,21 +25,28 @@
                 android:text="Chọn format: "
                 android:textColor="@color/white"
                 android:textSize="25dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="10dp"/>
 
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"/>
+
+                android:background="@color/white" />
         </LinearLayout>
 
         <Button
             android:id="@+id/export_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/button_color"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="25dp"
             android:text="Xuất file"
-            android:background="@color/button_color"/>
+            android:textSize="25dp" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,5 +57,6 @@
         android:background="@color/bottom_navbar_color"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
+        android:elevation="10dp"
         app:menu="@menu/bottom_navigation_item"/>
 </RelativeLayout>
