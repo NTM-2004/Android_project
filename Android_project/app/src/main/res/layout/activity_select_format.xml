@@ -8,6 +8,54 @@
     android:background="@color/primary_color"
     tools:context=".SelectFormatActivity">
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navbar"
+        android:padding="16dp">
+
+
+        <Button
+            android:id="@+id/btn_select_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="Chọn ảnh" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tv_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:scrollbars="vertical"
+                android:ellipsize="none"
+                android:singleLine="false"
+                android:lineSpacingExtra="2dp"
+                android:text="Văn bản sẽ hiển thị ở đây"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btn_save_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lưu dưới dạng Word (.docx)"
+            android:layout_marginTop="16dp"/>
+
+
+    </LinearLayout>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navbar"
@@ -17,5 +65,6 @@
         android:background="@color/bottom_navbar_color"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
-        app:menu="@menu/bottom_navigation_item"/>
+        app:menu="@menu/bottom_navigation_item" />
+
 </RelativeLayout>
