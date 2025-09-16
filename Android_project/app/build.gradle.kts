@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.android_project"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -40,4 +40,18 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    //ML kit
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+
+    //GSON for json generate
+    implementation("com.google.code.gson:gson:2.10.1")
+
+
+    //Apache POI
+    implementation("org.apache.poi:poi:5.2.3")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
+
+
+
 }
