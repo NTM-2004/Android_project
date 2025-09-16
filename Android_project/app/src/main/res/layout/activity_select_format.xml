@@ -65,6 +65,7 @@
         android:background="@color/bottom_navbar_color"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
+
         app:menu="@menu/bottom_navigation_item" />
 
 </RelativeLayout>
