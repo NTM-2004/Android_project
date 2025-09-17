@@ -1,20 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp"
+    tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btn_select_image"
+        android:id="@+id/btnPick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn ảnh" />
+        android:text="Chọn ảnh từ Gallery" />
+
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:background="#DDDDDD" />
+
+    <Button
+        android:id="@+id/btnOcr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Quét OCR" />
 
     <TextView
-        android:id="@+id/tv_result"
+        android:id="@+id/txtResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:text="Văn bản sẽ hiển thị ở đây" />
+        android:layout_marginTop="16dp"
+        android:text="Kết quả OCR sẽ hiển thị ở đây"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:background="#EEEEEE" />
+
 </LinearLayout>
