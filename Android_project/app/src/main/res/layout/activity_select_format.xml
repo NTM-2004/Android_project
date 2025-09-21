@@ -8,20 +8,25 @@
     android:background="@color/primary_color"
     tools:context=".SelectFormatActivity">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_navbar"
-        android:background="@color/bottom_navbar_color"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navbar"
+        android:padding="16dp">
 
-        <LinearLayout
+
+        <Button
+            android:id="@+id/btn_select_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
 
+
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_result"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="20dp"
@@ -38,8 +43,9 @@
                 android:background="@color/white" />
         </LinearLayout>
 
+
         <Button
-            android:id="@+id/export_button"
+            android:id="@+id/btn_save_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -48,7 +54,9 @@
             android:text="Xuất file"
             android:textSize="25sp" />
 
+
     </LinearLayout>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navbar"
