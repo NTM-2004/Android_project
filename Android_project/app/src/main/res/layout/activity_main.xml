@@ -1,20 +1,112 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/primary_color"
+    tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btn_select_image"
+    <GridLayout
+        android:id="@+id/button_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:columnCount="2"
+        android:useDefaultMargins="true"
+        android:alignmentMode="alignMargins">
+
+        <!-- First button: "NHẬP ẢNH" -->
+        <LinearLayout
+            android:id="@+id/btn_select_image"   <!-- keep old ID -->
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="135dp"
+                android:layout_height="135dp"
+                android:contentDescription="NHẬP ẢNH"
+                android:src="@drawable/baseline_add_photo_alternate_24"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="NHẬP ẢNH"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Second button: "MỞ FILE" -->
+        <LinearLayout
+            android:id="@+id/btn_open_file"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="135dp"
+                android:layout_height="135dp"
+                android:contentDescription="MỞ FILE"
+                android:src="@drawable/outline_add_notes_24"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="MỞ FILE"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </GridLayout>
+
+    <!-- Floating action button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn ảnh" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:contentDescription="CHỤP ẢNH"
+        android:src="@drawable/outline_add_a_photo_24"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/button_color" />
 
+    <!-- Keep tv_result for backend -->
     <TextView
         android:id="@+id/tv_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:text="Văn bản sẽ hiển thị ở đây" />
-</LinearLayout>
+        android:layout_below="@id/button_grid"
+        android:layout_marginTop="16dp"
+        android:text="Văn bản sẽ hiển thị ở đây"
+        android:textColor="@android:color/white"
+        android:padding="8dp"
+        android:visibility="gone" />
+
+    <!-- Bottom navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bottom_navbar_color"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        android:elevation="10dp"
+        app:menu="@menu/bottom_navigation_item" />
+</RelativeLayout>

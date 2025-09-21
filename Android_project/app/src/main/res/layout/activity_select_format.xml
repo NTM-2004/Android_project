@@ -21,37 +21,38 @@
             android:id="@+id/btn_select_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="Chọn ảnh" />
+            android:layout_marginTop="20dp">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true"
-            android:background="@android:color/transparent"
-            android:layout_marginTop="8dp">
 
             <TextView
                 android:id="@+id/tv_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:scrollbars="vertical"
-                android:ellipsize="none"
-                android:singleLine="false"
-                android:lineSpacingExtra="2dp"
-                android:text="Văn bản sẽ hiển thị ở đây"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="sans-serif"
+                android:text="Chọn format: "
                 android:textColor="@color/white"
-                android:textSize="14sp" />
-        </ScrollView>
+                android:textSize="25sp" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="125dp"
+                android:layout_height="48dp"
+
+                android:background="@color/white" />
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/btn_save_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lưu dưới dạng Word (.docx)"
-            android:layout_marginTop="16dp"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:backgroundTint="@color/button_color"
+            android:text="Xuất file"
+            android:textSize="25sp" />
 
 
     </LinearLayout>
@@ -65,7 +66,8 @@
         android:background="@color/bottom_navbar_color"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
+        android:elevation="10dp"
+        app:menu="@menu/bottom_navigation_item">
 
-        app:menu="@menu/bottom_navigation_item" />
-
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 </RelativeLayout>
