@@ -6,14 +6,17 @@ import androidx.core.content.FileProvider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.graphics.Rect;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,149 +30,149 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class SelectFormatActivity extends AppCompatActivity {
 
-    private Button btnSelectImage, btnSaveWord;
-    private TextView tvResult;
-    private static final int IMAGE_PICK_CODE = 1000;
-
-    private String jsonString; // keep recognized text
+    private ImageView imagePreview;
+    private TextRecognizer recognizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_format);
 
-        btnSelectImage = findViewById(R.id.btn_select_image);
-        btnSaveWord = findViewById(R.id.btn_save_word);
-        tvResult = findViewById(R.id.tv_result);
+        imagePreview = findViewById(R.id.preview_image);
+        Button export = findViewById(R.id.export_button);
 
-        btnSelectImage.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, IMAGE_PICK_CODE);
-        });
+        recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
-        btnSaveWord.setOnClickListener(v -> {
-            if (jsonString == null) {
-                Toast.makeText(this, "Hãy chọn ảnh trước", Toast.LENGTH_SHORT).show();
-            } else {
-                createWordFile(jsonString);
-            }
-        });
+        String uriString = getIntent().getExtras().getString("imageUri");
+        if (uriString != null) {
+            Uri imageUri = Uri.parse(uriString);
+            imagePreview.setImageURI(imageUri);
+            export.setOnClickListener(v -> {
+                try{
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    InputImage image = InputImage.fromBitmap(bitmap, 0);
 
-    }
+                    recognizer.process(image)
+                            .addOnSuccessListener(result -> {
+                                XWPFDocument document = new XWPFDocument();
 
-    private void createWordFile(String jsonData) {
-        try {
-            JsonObject root = new Gson().fromJson(jsonData, JsonObject.class);
-            JsonArray blocks = root.getAsJsonArray("blocks");
+                                CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
+                                CTPageMar pageMar = sectPr.addNewPgMar();
+                                // Căn lề khổ A4 (4 cạnh căn lề 1'')
+                                pageMar.setLeft(BigInteger.valueOf(1440));
+                                pageMar.setRight(BigInteger.valueOf(1440));
+                                pageMar.setTop(BigInteger.valueOf(1440));
+                                pageMar.setBottom(BigInteger.valueOf(1440));
 
-            // 1. Create Word document
-            XWPFDocument document = new XWPFDocument();
+                                XWPFParagraph paragraph = document.createParagraph();
+                                XWPFRun run = paragraph.createRun();
 
-            for (int i = 0; i < blocks.size(); i++) {
-                JsonObject block = blocks.get(i).getAsJsonObject();
-                String blockText = block.get("text").getAsString();
+                                List<Text.Line> lines = new ArrayList<>();
+                                for(Text.TextBlock block : result.getTextBlocks()){
+                                    lines.addAll(block.getLines());
+                                }
+                                // Sắp xếp các line theo thứ tự .top
+                                lines.sort(Comparator.comparingInt(line -> line.getBoundingBox().top));
+//
+                                try{
+                                    Rect lastBox = null;
+                                    String s = "";
+                                    int fontSize = 10;
+                                    int imageWidth = image.getWidth();
 
-                // Create paragraph for block
-                XWPFParagraph paragraph = document.createParagraph();
-                XWPFRun run = paragraph.createRun();
-                run.setText(blockText);
-                run.addCarriageReturn();
-            }
+                                    //Sắp xếp line theo thứ tự .left
+                                    Text.Line minLine = Collections.min(lines, Comparator.comparingInt(line -> line.getBoundingBox().left));
+                                    double minLeft = minLine.getBoundingBox().left;
+                                    for(Text.Line line : lines){
+                                        String text = line.getText().trim();
+                                        Rect box = line.getBoundingBox();
+                                        // cỡ chữ = chiều rộng bouding box / số chữ
+                                        double letterSize = (box.right - box.left) / text.length();
+                                        // A4 rộng 8.3'' , 1pt = 1/72 inch
+                                        fontSize = (int) Math.round((8.3 * 72 * letterSize) / imageWidth + 1);
+                                        run.setFontSize(fontSize);
+                                        run.setFontFamily("Courier New");
 
-            // 2. Save file
-            File wordFile = new File(getFilesDir(), "recognized_text.docx");
-            FileOutputStream out = new FileOutputStream(wordFile);
-            document.write(out);
-            out.close();
-            document.close();
+                                        int spaceNumber = 0;
+                                        // điều kiên dòng đầu tiên
+                                        if(lastBox == null){
+                                            spaceNumber = (int) Math.round((box.left - minLeft) / letterSize);
+                                        }else{
+                                            // điều kiện xuống dòng (bouding box .top không cao hơn trung tâm của dòng trước)
+                                            if(box.top > (lastBox.bottom + lastBox.top)/2){
+                                                run.setText(s);
+                                                s = "";
+                                                run.addBreak();
 
-            Toast.makeText(this, "Đã lưu file Word", Toast.LENGTH_SHORT).show();
+                                                spaceNumber = (int) Math.round((box.left - minLeft) / letterSize);
+                                            }else{
+                                                spaceNumber = (int) Math.round((box.left - lastBox.right) / letterSize);
+                                            }
+                                        }
+                                        for (int i = 0; i < spaceNumber; i++) {
+                                            s += " ";
+                                        }
+                                        s += text;
+                                        lastBox = box;
+                                    }
+                                    // nhập dòng cuối
+                                    run.setFontSize(fontSize);
+                                    run.setFontFamily("Courier New");
+                                    run.setText(s);
 
-            // 3. Preview file
-            previewWordFile(wordFile);
+                                    File file = new File(getExternalFilesDir(null), "OCR_Result.docx");
+                                    FileOutputStream out = new FileOutputStream(file);
+                                    document.write(out);
+                                    out.close();
+                                    document.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Lỗi khi tạo file Word: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(this, "Xuất file thành công: " + file.getAbsolutePath(),
+                                            Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(this, "Lỗi OCR: "
+                                    + e.getMessage(), Toast.LENGTH_SHORT).show());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }else{
+            Toast.makeText(this, "không nhận được ảnh", Toast.LENGTH_LONG).show();
         }
-    }
 
-    private void previewWordFile(File file) {
-        try {
-            Uri uri = FileProvider.getUriForFile(this,
-                    getPackageName() + ".provider", file);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);
+        bottomNavigation.setOnItemSelectedListener(menuItem -> {
+            int item= menuItem.getItemId();
+            if(item == R.id.homePage){
+                startActivity(new Intent(SelectFormatActivity.this, MainActivity.class));
+                return true;
+            }else if(item == R.id.filePage){
 
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(intent);
-
-        } catch (Exception e) {
-            Toast.makeText(this, "Không có ứng dụng xem Word. File được lưu ở: " + file.getAbsolutePath(),
-                    Toast.LENGTH_LONG).show();
-        }
+            }
+            return false;
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            Uri imageUri = data.getData();
-            if (imageUri != null) {
-                try {
-                    InputImage image = InputImage.fromFilePath(this, imageUri);
-                    TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
-
-                    recognizer.process(image)
-                            .addOnSuccessListener(visionText -> {
-                                JsonArray blocksArray = new JsonArray();
-
-                                for (Text.TextBlock block : visionText.getTextBlocks()) {
-                                    JsonObject blockJson = new JsonObject();
-                                    blockJson.addProperty("text", block.getText());
-
-                                    Rect rect = block.getBoundingBox();
-                                    if (rect != null) {
-                                        blockJson.addProperty("left", rect.left);
-                                        blockJson.addProperty("top", rect.top);
-                                        blockJson.addProperty("right", rect.right);
-                                        blockJson.addProperty("bottom", rect.bottom);
-                                        blockJson.addProperty("width", rect.width());
-                                        blockJson.addProperty("height", rect.height());
-                                    }
-
-                                    JsonArray linesArray = new JsonArray();
-                                    for (Text.Line line : block.getLines()) {
-                                        JsonObject lineJson = new JsonObject();
-                                        lineJson.addProperty("text", line.getText());
-                                        linesArray.add(lineJson);
-                                    }
-                                    blockJson.add("lines", linesArray);
-                                    blocksArray.add(blockJson);
-                                }
-
-                                JsonObject lastJsonResult = new JsonObject();
-                                lastJsonResult.add("blocks", blocksArray);
-                                jsonString = new Gson().toJson(lastJsonResult);
-
-                                tvResult.setText(jsonString);
-
-                            })
-                            .addOnFailureListener(e -> tvResult.setText("Lỗi: " + e.getMessage()));
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    tvResult.setText("Lỗi đọc ảnh: " + e.getMessage());
-                }
-            }
-        }
     }
 }

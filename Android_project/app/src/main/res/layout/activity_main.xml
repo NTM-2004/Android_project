@@ -94,8 +94,6 @@
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
         android:elevation="10dp"
-        app:menu="@menu/bottom_navigation_item">
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
-
+        app:menu="@menu/bottom_navigation_item"
+        app:itemActiveIndicatorStyle="@null"/>
 </RelativeLayout>

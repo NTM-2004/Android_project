@@ -27,17 +27,19 @@
 
         <activity
             android:name=".SelectFormatActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <!-- MainActivity is no longer launcher -->
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
     </application>
