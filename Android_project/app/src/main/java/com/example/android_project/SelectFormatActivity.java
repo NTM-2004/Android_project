@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -97,20 +98,23 @@ public class SelectFormatActivity extends AppCompatActivity {
 
                                     //Sắp xếp line theo thứ tự .left
                                     Text.Line minLine = Collections.min(lines, Comparator.comparingInt(line -> line.getBoundingBox().left));
+                                    Text.Line maxLine = Collections.max(lines, Comparator.comparingInt(line -> line.getBoundingBox().right));
                                     double minLeft = minLine.getBoundingBox().left;
+                                    double maxRight = maxLine.getBoundingBox().right;
                                     for(Text.Line line : lines){
                                         String text = line.getText().trim();
                                         Rect box = line.getBoundingBox();
                                         // cỡ chữ = chiều rộng bouding box / số chữ
-                                        double letterSize = (box.right - box.left) / text.length();
+                                        double letterSize = ((double)box.right - (double)box.left) / text.length();
                                         // A4 rộng 8.3'' , 1pt = 1/72 inch
-                                        fontSize = (int) Math.round((8.3 * 72 * letterSize) / imageWidth + 1);
-                                        run.setFontSize(fontSize);
-                                        run.setFontFamily("Courier New");
-
+                                        fontSize = (int) Math.round((6.3 * 72 * letterSize) / (maxRight - minLeft) + 1);
                                         int spaceNumber = 0;
                                         // điều kiên dòng đầu tiên
                                         if(lastBox == null){
+                                            run = paragraph.createRun();
+                                            run.setFontSize(fontSize);
+                                            run.setFontFamily("Courier New");
+
                                             spaceNumber = (int) Math.round((box.left - minLeft) / letterSize);
                                         }else{
                                             // điều kiện xuống dòng (bouding box .top không cao hơn trung tâm của dòng trước)
@@ -118,6 +122,10 @@ public class SelectFormatActivity extends AppCompatActivity {
                                                 run.setText(s);
                                                 s = "";
                                                 run.addBreak();
+
+                                                run = paragraph.createRun();
+                                                run.setFontSize(fontSize);
+                                                run.setFontFamily("Courier New");
 
                                                 spaceNumber = (int) Math.round((box.left - minLeft) / letterSize);
                                             }else{
@@ -129,10 +137,20 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         }
                                         s += text;
                                         lastBox = box;
+                                        Log.d("MLkit.Log", "Text: " + text + ": " + text.length());
+                                        Log.d("MLkit.Log", "Image size: " + image.getWidth());
+                                        Log.d("MLkit.Log", "Left min: " + minLeft);
+                                        Log.d("MLkit.Log", "Right max: " + maxRight);
+                                        Log.d("MLkit.Log", "Left: " + box.left + ", right: " + box.right);
+                                        Log.d("MLkit.Log", "Letter size: " + letterSize);
+                                        Log.d("MLkit.Log", "Front size: " + fontSize);
+                                        Log.d("MLkit.Log", "Space number: " + spaceNumber);
+                                        Log.d("MLkit.Log", "*******************");
                                     }
                                     // nhập dòng cuối
-                                    run.setFontSize(fontSize);
-                                    run.setFontFamily("Courier New");
+//                                    run = paragraph.createRun();
+//                                    run.setFontSize(fontSize);
+//                                    run.setFontFamily("Courier New");
                                     run.setText(s);
 
                                     File file = new File(getExternalFilesDir(null), "OCR_Result.docx");
