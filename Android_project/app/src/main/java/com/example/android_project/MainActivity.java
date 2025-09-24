@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -42,48 +43,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imgSelect = findViewById(R.id.image_select);
-        imgImport = findViewById(R.id.import_image);
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navbar);
 
-        imgSelect.setOnClickListener(v -> {
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, PICK_CAMERA);
-        });
+        // mặc định mở HomeFragment
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame_container, new HomeFragment())
+                    .commit();
+        }
 
-        imgImport.setOnClickListener(v -> {
-            Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(gallery, IMAGE_PICK_CODE);
-        });
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selected = null;
+            if (item.getItemId() == R.id.homePage) {
+                selected = new HomeFragment();
+            } else if (item.getItemId() == R.id.filePage) {
+                selected = new SelectFormatFragment();
+            }
 
-        bottomNavigation.setOnItemSelectedListener(menuItem -> {
-            int item= menuItem.getItemId();
-            if(item == R.id.homePage){
+            if (selected != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frame_container, selected)
+                        .commit();
                 return true;
-            }else if(item == R.id.filePage){
-
             }
             return false;
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && data != null) {
-            if (requestCode == IMAGE_PICK_CODE) {
-                imageUri = data.getData();
-            } else if (requestCode == PICK_CAMERA) {
-                Bundle extras = data.getExtras();
-                if (extras != null && extras.get("data") != null) {
-                    imageUri = data.getData();
-                }
-            }
-            if (imageUri != null) {
-                Intent intent = new Intent(MainActivity.this, SelectFormatActivity.class);
-                intent.putExtra("imageUri", imageUri.toString());
-                startActivity(intent);
-            }
-        }
     }
 }
