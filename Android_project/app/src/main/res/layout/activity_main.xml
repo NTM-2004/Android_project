@@ -53,7 +53,7 @@
             android:padding="20dp">
 
             <ImageView
-                android:id="@+id/image_select"
+                android:id="@+id/file_manage"
                 android:layout_width="135dp"
                 android:layout_height="135dp"
                 android:contentDescription="MỞ FILE"

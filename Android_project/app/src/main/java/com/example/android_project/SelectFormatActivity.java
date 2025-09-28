@@ -2,9 +2,7 @@ package com.example.android_project;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,14 +11,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.graphics.Rect;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
@@ -35,7 +29,6 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -57,15 +50,20 @@ public class SelectFormatActivity extends AppCompatActivity {
         imagePreview = findViewById(R.id.preview_image);
         Button export = findViewById(R.id.export_button);
 
+        //khởi tạo ml kit text reg
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
-        String uriString = getIntent().getExtras().getString("imageUri");
+        String uriString = getIntent().getStringExtra("imageUri");
         if (uriString != null) {
             Uri imageUri = Uri.parse(uriString);
+            // hiển thị ảnh lên màn
             imagePreview.setImageURI(imageUri);
             export.setOnClickListener(v -> {
                 try{
+                    // Bitmap: định dạng ảnh cơ bản trong Android (dữ liệu ảnh thô)
+                    // đọc ảnh từ uri
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    // dữ liệu chuẩn hóa để chạy ml kit
                     InputImage image = InputImage.fromBitmap(bitmap, 0);
 
                     recognizer.process(image)
@@ -94,7 +92,7 @@ public class SelectFormatActivity extends AppCompatActivity {
                                     Rect lastBox = null;
                                     String s = "";
                                     int fontSize = 10;
-                                    int imageWidth = image.getWidth();
+//                                    int imageWidth = image.getWidth();
 
                                     //Sắp xếp line theo thứ tự .left
                                     Text.Line minLine = Collections.min(lines, Comparator.comparingInt(line -> line.getBoundingBox().left));
@@ -106,7 +104,7 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         Rect box = line.getBoundingBox();
                                         // cỡ chữ = chiều rộng bouding box / số chữ
                                         double letterSize = ((double)box.right - (double)box.left) / text.length();
-                                        // A4 rộng 8.3'' , 1pt = 1/72 inch
+                                        // A4 rộng 8.3'' trừ cách lề , 1pt = 1/72 inch
                                         fontSize = (int) Math.round((6.3 * 72 * letterSize) / (maxRight - minLeft) + 1);
                                         int spaceNumber = 0;
                                         // điều kiên dòng đầu tiên
@@ -182,7 +180,8 @@ public class SelectFormatActivity extends AppCompatActivity {
                 startActivity(new Intent(SelectFormatActivity.this, MainActivity.class));
                 return true;
             }else if(item == R.id.filePage){
-
+                Intent intent = new Intent(SelectFormatActivity.this, FileManageActivity.class);
+                startActivity(intent);
             }
             return false;
         });
