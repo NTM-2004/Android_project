@@ -53,6 +53,6 @@ dependencies {
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
 
-
-
+    //NanoHTTPD for HTTP server
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
 }
