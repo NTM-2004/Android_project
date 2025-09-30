@@ -158,7 +158,7 @@ public class SelectFormatActivity extends AppCompatActivity {
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault());
                                     String timestamp = sdf.format(new Date());
                                     String fileName = "OCR_Result_" + timestamp + ".docx";
-
+                                    
                                     File file = new File(getExternalFilesDir(null), fileName);
                                     FileOutputStream out = new FileOutputStream(file);
                                     document.write(out);

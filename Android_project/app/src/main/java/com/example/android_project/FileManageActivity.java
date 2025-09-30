@@ -186,7 +186,6 @@ public class FileManageActivity extends AppCompatActivity {
                 PopupMenu popup = new PopupMenu(this, v);
                 popup.setOnMenuItemClickListener(item -> {
                     int itemId = item.getItemId();
-
                     if (itemId == R.id.delete_file) {
                         new AlertDialog.Builder(this)
                                 .setTitle("Xóa file")
@@ -202,6 +201,16 @@ public class FileManageActivity extends AppCompatActivity {
                                 })
                                 .setNegativeButton("Không", null)
                                 .show();
+                        return true;
+                    }
+
+                    // xử lý nút chia sẻ file
+                    if (itemId == R.id.share_file)
+                    {
+                        Intent intent = new Intent(FileManageActivity.this, ShareFileActivity.class);
+                        intent.putExtra("file_path", file.getAbsolutePath());
+                        intent.putExtra("file_name", file.getName());
+                        startActivity(intent);
                         return true;
                     }
                     return false;
