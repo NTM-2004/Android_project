@@ -26,6 +26,11 @@ import androidx.core.content.FileProvider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class FileManageActivity extends AppCompatActivity {
     private LinearLayout container;
@@ -59,6 +64,16 @@ public class FileManageActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Auto reload danh sách file mỗi khi quay về FileManageActivity
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            loadWordFiles();
+        }
+    }
+
     //Nếu có quyền truy cập
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -80,20 +95,47 @@ public class FileManageActivity extends AppCompatActivity {
             TextView tv = new TextView(this);
             tv.setText("Thư mục lưu file không tồn tại");
             tv.setPadding(20, 20, 20, 20);
+            tv.setTextColor(ContextCompat.getColor(this, R.color.white));
             container.addView(tv);
             return;
         }
-        File[] files = dir.listFiles();
 
-        if (files == null || files.length == 0) {
+        File[] allFiles = dir.listFiles();
+        if (allFiles == null || allFiles.length == 0) {
             TextView tv = new TextView(this);
             tv.setText("Không có file Word nào trong thư mục app");
             tv.setPadding(20, 20, 20, 20);
+            tv.setTextColor(ContextCompat.getColor(this, R.color.white));
             container.addView(tv);
             return;
         }
 
-        for (File file : files) {
+        // Lọc chỉ lấy file .docx và sắp xếp theo thời gian tạo (mới nhất trước)
+        List<File> docxFiles = new ArrayList<>();
+        for (File file : allFiles) {
+            if (file.isFile() && file.getName().toLowerCase().endsWith(".docx")) {
+                docxFiles.add(file);
+            }
+        }
+
+        if (docxFiles.isEmpty()) {
+            TextView tv = new TextView(this);
+            tv.setText("Không có file Word (.docx) nào trong thư mục");
+            tv.setPadding(20, 20, 20, 20);
+            tv.setTextColor(ContextCompat.getColor(this, R.color.white));
+            container.addView(tv);
+            return;
+        }
+
+        // Sắp xếp theo thời gian sửa đổi cuối cùng (file mới nhất lên đầu)
+        Collections.sort(docxFiles, new Comparator<File>() {
+            @Override
+            public int compare(File f1, File f2) {
+                return Long.compare(f2.lastModified(), f1.lastModified());
+            }
+        });
+
+        for (File file : docxFiles) {
             LinearLayout itemLayout = new LinearLayout(this);
             itemLayout.setOrientation(LinearLayout.HORIZONTAL);
             itemLayout.setPadding(20, 20, 20, 20);

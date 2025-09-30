@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        // Xóa dòng loadWordFiles() - không hiển thị file ở MainActivity
     }
 
     // Method gọi sau khi có kết quả của activity
@@ -75,4 +77,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Xóa auto reload - không cần hiển thị file ở MainActivity
+    }
+
+    // Xóa hoàn toàn method loadWordFiles() và openWordFile()
+    // Chúng chỉ cần có trong FileManageActivity
 }

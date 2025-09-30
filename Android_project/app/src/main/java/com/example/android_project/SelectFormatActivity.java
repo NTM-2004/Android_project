@@ -32,10 +32,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SelectFormatActivity extends AppCompatActivity {
 
@@ -151,13 +154,18 @@ public class SelectFormatActivity extends AppCompatActivity {
 //                                    run.setFontFamily("Courier New");
                                     run.setText(s);
 
-                                    File file = new File(getExternalFilesDir(null), "OCR_Result.docx");
+                                    // Tạo tên file unique dựa trên timestamp
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault());
+                                    String timestamp = sdf.format(new Date());
+                                    String fileName = "OCR_Result_" + timestamp + ".docx";
+
+                                    File file = new File(getExternalFilesDir(null), fileName);
                                     FileOutputStream out = new FileOutputStream(file);
                                     document.write(out);
                                     out.close();
                                     document.close();
 
-                                    Toast.makeText(this, "Xuất file thành công: " + file.getAbsolutePath(),
+                                    Toast.makeText(this, "Xuất file thành công: " + fileName,
                                             Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
