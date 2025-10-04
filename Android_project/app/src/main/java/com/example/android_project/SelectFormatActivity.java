@@ -87,12 +87,12 @@ public class SelectFormatActivity extends AppCompatActivity {
                                 }
                                 // Sắp xếp các line theo thứ tự .top
                                 lines.sort(Comparator.comparingInt(line -> line.getBoundingBox().top));
-//
+
                                 try{
                                     Rect lastBox = null;
                                     String s = "";
                                     int fontSize = 10;
-//                                    int imageWidth = image.getWidth();
+                                    //int imageWidth = image.getWidth();
 
                                     //Sắp xếp line theo thứ tự .left
                                     Text.Line minLine = Collections.min(lines, Comparator.comparingInt(line -> line.getBoundingBox().left));
@@ -105,7 +105,12 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         // cỡ chữ = chiều rộng bouding box / số chữ
                                         double letterSize = ((double)box.right - (double)box.left) / text.length();
                                         // A4 rộng 8.3'' trừ cách lề , 1pt = 1/72 inch
-                                        fontSize = (int) Math.round((6.3 * 72 * letterSize) / (maxRight - minLeft) + 1);
+                                        // Test thành 7
+                                        fontSize = (int) Math.round((7 * 72 * letterSize) / (maxRight - minLeft) + 1);
+                                        // Font size theo chiều cao
+                                        //fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
+                                        // Ép cỡ tối thiểu
+                                        //fontSize = Math.max(fontSize, 11);
                                         int spaceNumber = 0;
                                         // điều kiên dòng đầu tiên
                                         if(lastBox == null){

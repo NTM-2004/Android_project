@@ -1,5 +1,8 @@
 package com.example.android_project;
 
+import static com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_JPEG;
+import static com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,12 +13,17 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult;
 
 public class MainActivity extends AppCompatActivity {
 
     private ImageView imgSelect;
     private ImageView imgImport;
     private Uri imageUri;
+
     // Phương thức khởi tạo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +35,35 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);
 
         imgSelect.setOnClickListener(v -> {
-            // Tạo intent yêu cầu chụp ảnh
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Tạo Document Scanner
+            GmsDocumentScannerOptions options = new GmsDocumentScannerOptions.Builder()
+                    .setScannerMode(SCANNER_MODE_FULL)
+                    .setGalleryImportAllowed(true)
+                    .setPageLimit(1)
+                    .setResultFormats(RESULT_FORMAT_JPEG)
+                    .build();
+
+            GmsDocumentScanner scanner = GmsDocumentScanning.getClient(options);
+
+            scanner.getStartScanIntent(MainActivity.this)
+                    .addOnSuccessListener(intentSender -> {
+                        try {
+                            // Dùng IntentSender(PendingIntent)
+                            startIntentSenderForResult(
+                                    intentSender,
+                                    1,
+                                    null, 0, 0, 0
+                            );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .addOnFailureListener(Throwable::printStackTrace);
+
+            // Method cũ
+            //Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Bắt đầu Camera, chờ kết quả, PICK_CAMERA (101) để nhận dạng kết quả.
-            startActivityForResult(cameraIntent, 1);
+            //startActivityForResult(cameraIntent, 1);
         });
 
         imgImport.setOnClickListener(v -> {
@@ -61,15 +94,16 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == 2) {
                 imageUri = data.getData();
             } else if (requestCode == 1) {
-                // Lấy dữ liệu bổ sung trả về
-                Bundle extras = data.getExtras();
-                //Kiểm tra nếu có dữ liệu thumbnail trong extras (cách camera trả về ảnh thumbnail).
-                if (extras != null && extras.get("data") != null) {
-                    imageUri = data.getData();
-                }
+                // Lấy dữ liệu từ Document Scanner
+                GmsDocumentScanningResult result =
+                        GmsDocumentScanningResult.fromActivityResultIntent(data);
+
+                imageUri = result.getPages().get(0).getImageUri();
+
             }
             if (imageUri != null) {
                 Intent intent = new Intent(MainActivity.this, SelectFormatActivity.class);
+                // Nếu cần mở rộng, thay = ArrayList<>
                 intent.putExtra("imageUri", imageUri.toString());
                 startActivity(intent);
             }
