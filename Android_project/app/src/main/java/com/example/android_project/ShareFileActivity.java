@@ -9,9 +9,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
 
 public class ShareFileActivity extends AppCompatActivity{
     private static final int REQUEST_CODE_PICK_FILE = 1;
@@ -119,7 +124,7 @@ public class ShareFileActivity extends AppCompatActivity{
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface intf : interfaces) {
-                List<java.net.InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
                 for (java.net.InetAddress addr : addrs) {
                     if (!addr.isLoopbackAddress()) {
                         String sAddr = addr.getHostAddress();
