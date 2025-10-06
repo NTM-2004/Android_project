@@ -35,16 +35,16 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
                 android:fontFamily="sans-serif"
-                android:text="Chọn format: "
+                android:text="Nhập tên: "
                 android:textColor="@color/white"
                 android:textSize="25dp" />
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/file_name"
+                android:layout_width="148dp"
                 android:layout_height="wrap_content"
-
-                android:background="@color/white" />
+                android:background="@color/white"
+                android:inputType="text"/>
         </LinearLayout>
 
         <Button
