@@ -94,6 +94,7 @@ public class FileManageActivity extends AppCompatActivity {
         if (dir == null || !dir.exists()) {
             TextView tv = new TextView(this);
             tv.setText("Thư mục lưu file không tồn tại");
+            tv.setTextColor(Color.WHITE);
             tv.setPadding(20, 20, 20, 20);
             tv.setTextColor(ContextCompat.getColor(this, R.color.white));
             container.addView(tv);
@@ -103,7 +104,7 @@ public class FileManageActivity extends AppCompatActivity {
         File[] allFiles = dir.listFiles();
         if (allFiles == null || allFiles.length == 0) {
             TextView tv = new TextView(this);
-            tv.setText("Không có file Word nào trong thư mục app");
+            tv.setText("Không có file nào trong thư mục app");
             tv.setPadding(20, 20, 20, 20);
             tv.setTextColor(ContextCompat.getColor(this, R.color.white));
             container.addView(tv);
