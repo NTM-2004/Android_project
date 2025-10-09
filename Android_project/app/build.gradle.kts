@@ -55,4 +55,7 @@ dependencies {
 
     //NanoHTTPD for HTTP server
     implementation("org.nanohttpd:nanohttpd:2.3.1")
+    //Document scanner
+    implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
+
 }
