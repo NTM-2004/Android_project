@@ -53,10 +53,10 @@
             android:padding="20dp">
 
             <ImageView
-                android:id="@+id/file_manage"
+                android:id="@+id/export_pdf"
                 android:layout_width="135dp"
                 android:layout_height="135dp"
-                android:contentDescription="MỞ FILE"
+                android:contentDescription="XUẤT PDF"
                 android:src="@drawable/outline_add_notes_24"
                 app:tint="@android:color/white"
                 android:clickable="true"/>
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="MỞ FILE"
+                android:text="XUẤT PDF"
                 android:textColor="@android:color/white"
                 android:textSize="17sp"
                 android:textStyle="bold" />

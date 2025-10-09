@@ -1,6 +1,7 @@
 package com.example.android_project;
 
 import static com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_JPEG;
+import static com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_PDF;
 import static com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView imgSelect;
     private ImageView imgImport;
+    private ImageView pdfExport;
     private Uri imageUri;
 
     // Phương thức khởi tạo
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         imgSelect = findViewById(R.id.fab_camera);
         imgImport = findViewById(R.id.import_image);
+        pdfExport = findViewById(R.id.export_pdf);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);
 
         imgSelect.setOnClickListener(v -> {
@@ -73,6 +76,35 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(gallery, 2);
         });
 
+        pdfExport.setOnClickListener(v -> {
+            // Tạo Document Scanner
+            GmsDocumentScannerOptions options = new GmsDocumentScannerOptions.Builder()
+                    .setScannerMode(SCANNER_MODE_FULL)
+                    .setGalleryImportAllowed(true)
+                    .setPageLimit(1)
+                    .setResultFormats(RESULT_FORMAT_PDF)
+                    .build();
+
+            GmsDocumentScanner scanner = GmsDocumentScanning.getClient(options);
+
+            scanner.getStartScanIntent(MainActivity.this)
+                    .addOnSuccessListener(intentSender -> {
+                        try {
+                            // Dùng IntentSender(PendingIntent)
+                            startIntentSenderForResult(
+                                    intentSender,
+                                    3,
+                                    null, 0, 0, 0
+                            );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .addOnFailureListener(Throwable::printStackTrace);
+
+
+        });
+
         bottomNavigation.setOnItemSelectedListener(menuItem -> {
             int item= menuItem.getItemId();
             if(item == R.id.homePage){
@@ -102,7 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
                 imageUri = result.getPages().get(0).getImageUri();
 
+            } else if (requestCode == 3) {
+
             }
+
             if (imageUri != null) {
                 Intent intent = new Intent(MainActivity.this, SelectFormatActivity.class);
                 // Nếu cần mở rộng, thay = ArrayList<>
