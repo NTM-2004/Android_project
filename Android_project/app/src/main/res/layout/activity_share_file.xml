@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/share_file_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:background="@color/primary_color"
     tools:context=".ShareFileActivity">
 
     <TextView
@@ -13,7 +15,7 @@
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:text="Chia sẻ file"
-        android:textColor="#333333"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -25,7 +27,7 @@
         android:layout_marginTop="100dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:background="#f0f0f0"
+        android:background="@color/white"
         android:gravity="center"
         android:text="Chưa chọn file"
         android:textSize="16sp"
@@ -33,14 +35,16 @@
 
     <Button
         android:id="@+id/bthShare"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fileNameTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
+        android:backgroundTint="@color/button_color"
+        android:padding="16dp"
         android:text="Chia sẻ"
-        android:textSize="18sp"
-        android:padding="16dp" />
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/serverStatusTextView"
@@ -52,7 +56,19 @@
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:text="Server chưa khởi động"
-        android:textColor="#666666"
+        android:textColor="@color/white"
         android:textSize="14sp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bottom_navbar_color"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        android:elevation="10dp"
+        app:menu="@menu/bottom_navigation_item"
+        app:itemActiveIndicatorStyle="@null"/>
 
 </RelativeLayout>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/select_format_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_color"
@@ -12,6 +12,7 @@
         android:id="@+id/preview_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="XEM ẢNH"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:layout_above="@+id/controls_layout" />
@@ -32,12 +33,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
                 android:fontFamily="sans-serif"
                 android:text="Nhập tên: "
                 android:textColor="@color/white"
-                android:textSize="25dp" />
+                android:textSize="25sp" />
 
             <EditText
                 android:id="@+id/file_name"
@@ -51,13 +52,13 @@
             android:id="@+id/export_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="25dp"
             android:backgroundTint="@color/button_color"
             android:text="Xuất file"
-            android:textSize="25dp" />
+            android:textSize="25sp" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
