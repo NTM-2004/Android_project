@@ -111,10 +111,10 @@ public class FileManageActivity extends AppCompatActivity {
             return;
         }
 
-        // Lọc chỉ lấy file .docx và sắp xếp theo thời gian tạo (mới nhất trước)
+        // Lọc chỉ lấy file .docx + .pdf và sắp xếp theo thời gian tạo (mới nhất trước)
         List<File> docxFiles = new ArrayList<>();
         for (File file : allFiles) {
-            if (file.isFile() && file.getName().toLowerCase().endsWith(".docx")) {
+            if (file.isFile() && file.getName().toLowerCase().endsWith(".docx") || file.isFile() && file.getName().toLowerCase().endsWith(".pdf")) {
                 docxFiles.add(file);
             }
         }
@@ -147,7 +147,13 @@ public class FileManageActivity extends AppCompatActivity {
             itemLayout.setBackground(bg);
 
             ImageView icon = new ImageView(this);
-            icon.setImageResource(R.drawable.word_icon);
+
+            if(file.getName().toLowerCase().endsWith(".docx")){
+                icon.setImageResource(R.drawable.word_icon);
+            }else{
+                icon.setImageResource(R.drawable.pdf_icon);
+            }
+
             LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(80, 80);
             iconParams.setMargins(0, 0, 30, 0);
             icon.setLayoutParams(iconParams);
