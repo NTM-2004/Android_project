@@ -112,13 +112,14 @@ public class SelectFormatActivity extends AppCompatActivity {
                                     for(Text.Line line : lines){
                                         String text = line.getText().trim();
                                         Rect box = line.getBoundingBox();
+
                                         // cỡ chữ = chiều rộng bouding box / số chữ
                                         double letterSize = ((double)box.right - (double)box.left) / text.length();
                                         // A4 rộng 8.3'' trừ cách lề , 1pt = 1/72 inch
                                         // Test thành 7
                                         fontSize = (int) Math.round((7 * 72 * letterSize) / (maxRight - minLeft) + 1);
                                         // Font size theo chiều cao
-                                        //fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
+                                        fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
                                         // Ép cỡ tối thiểu
                                         //fontSize = Math.max(fontSize, 11);
                                         int spaceNumber = 0;
@@ -161,9 +162,9 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         Log.d("MLkit.Log", "*******************");
                                     }
                                     // nhập dòng cuối
-//                                    run = paragraph.createRun();
-//                                    run.setFontSize(fontSize);
-//                                    run.setFontFamily("Courier New");
+                                    //run = paragraph.createRun();
+                                    //run.setFontSize(fontSize);
+                                    //run.setFontFamily("Courier New");
                                     run.setText(s);
 
                                     // Tạo tên file unique dựa trên timestamp
