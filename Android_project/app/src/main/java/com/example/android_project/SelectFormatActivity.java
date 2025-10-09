@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.graphics.Rect;
 import android.widget.Toast;
@@ -44,6 +45,8 @@ public class SelectFormatActivity extends AppCompatActivity {
 
     private ImageView imagePreview;
     private TextRecognizer recognizer;
+    private EditText fileName;
+    String fname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,10 @@ public class SelectFormatActivity extends AppCompatActivity {
             // hiển thị ảnh lên màn
             imagePreview.setImageURI(imageUri);
             export.setOnClickListener(v -> {
+                fileName = findViewById(R.id.file_name);
+
+                fname = fileName.getText().toString();
+                if(fname.equals("")) fname = "OCR";
                 try{
                     // Bitmap: định dạng ảnh cơ bản trong Android (dữ liệu ảnh thô)
                     // đọc ảnh từ uri
@@ -155,9 +162,9 @@ public class SelectFormatActivity extends AppCompatActivity {
                                     run.setText(s);
 
                                     // Tạo tên file unique dựa trên timestamp
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault());
-                                    String timestamp = sdf.format(new Date());
-                                    String fileName = "OCR_Result_" + timestamp + ".docx";
+//                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault());
+//                                    String timestamp = sdf.format(new Date());
+                                    String fileName = fname + ".docx";
                                     
                                     File file = new File(getExternalFilesDir(null), fileName);
                                     FileOutputStream out = new FileOutputStream(file);
