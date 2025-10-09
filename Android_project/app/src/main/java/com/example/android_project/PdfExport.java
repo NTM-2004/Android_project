@@ -47,39 +47,35 @@ public class PdfExport extends AppCompatActivity {
 
         String imageUriString = getIntent().getStringExtra("imageUri");
         String pdfUriString = getIntent().getStringExtra("pdfUri");
-        if (imageUriString != null) {
 
+        if (imageUriString != null && pdfUriString != null) {
+            Uri imageUri = Uri.parse(imageUriString);
             Uri pdfUri = Uri.parse(pdfUriString);
 
-            // hiển thị ảnh
-            Uri imageUri = Uri.parse(imageUriString);
             imagePreview.setImageURI(imageUri);
 
             export.setOnClickListener(v -> {
                 fileName = findViewById(R.id.file_name);
-
                 fname = fileName.getText().toString();
+                if (fname.isEmpty()) fname = "OCR";
 
-                if(fname.equals("")) fname = "OCR";
                 try (InputStream in = getContentResolver().openInputStream(pdfUri)) {
                     File dir = getExternalFilesDir(null);
-
                     File outFile = new File(dir, fname + ".pdf");
                     try (OutputStream out = new FileOutputStream(outFile)) {
                         byte[] buffer = new byte[1024];
                         int len;
                         while ((len = in.read(buffer)) > 0) out.write(buffer, 0, len);
                     }
-
                     Toast.makeText(this, "Xuất file thành công: " + outFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "Lưu không thành công" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Lưu không thành công: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-        }else{
-            Toast.makeText(this, "Không nhận dữ liệu", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Không nhận dữ liệu PDF hoặc ảnh", Toast.LENGTH_LONG).show();
+            finish();
         }
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);

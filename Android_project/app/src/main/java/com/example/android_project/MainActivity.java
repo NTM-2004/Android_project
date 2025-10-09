@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgImport;
     private ImageView pdfExport;
     private Uri imageUri;
+    private Uri pdfUri;
 
     // Phương thức khởi tạo
     @Override
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     .setScannerMode(SCANNER_MODE_FULL)
                     .setGalleryImportAllowed(true)
                     .setPageLimit(1)
-                    .setResultFormats(RESULT_FORMAT_PDF,RESULT_FORMAT_JPEG)
+                    .setResultFormats(RESULT_FORMAT_JPEG,RESULT_FORMAT_PDF)
                     .build();
 
             GmsDocumentScanner scanner = GmsDocumentScanning.getClient(options);
@@ -140,20 +142,19 @@ public class MainActivity extends AppCompatActivity {
                         GmsDocumentScanningResult.fromActivityResultIntent(data);
 
                 // Lấy file từ Document Scanner
-                Uri jpegUri = result.getPages().get(0).getImageUri();
-                Uri pdfUri = result.getPdf() != null ? result.getPdf().getUri() : null;
+                imageUri = result.getPages().get(0).getImageUri();
+                pdfUri = result.getPdf().getUri();
 
-                Intent intent = new Intent(MainActivity.this, PdfExport.class);
-                intent.putExtra("imageUri", jpegUri.toString());
-                intent.putExtra("pdfUri", pdfUri != null ? pdfUri.toString() : null);
-                startActivity(intent);
-
-                return;
             }
 
-            if (imageUri != null) {
+            if (imageUri != null && requestCode!=3) {
                 Intent intent = new Intent(MainActivity.this, SelectFormatActivity.class);
                 intent.putExtra("imageUri", imageUri.toString());
+                startActivity(intent);
+            } else if (imageUri != null && requestCode==3){
+                Intent intent = new Intent(MainActivity.this, PdfExport.class);
+                intent.putExtra("imageUri", imageUri.toString());
+                intent.putExtra("pdfUri", pdfUri.toString());
                 startActivity(intent);
             }
         }
