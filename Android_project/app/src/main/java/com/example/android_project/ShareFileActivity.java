@@ -1,6 +1,5 @@
 package com.example.android_project;
 
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,9 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.List;
 
 public class ShareFileActivity extends AppCompatActivity{
     private static final int REQUEST_CODE_PICK_FILE = 1;
@@ -20,7 +23,7 @@ public class ShareFileActivity extends AppCompatActivity{
     private TextView serverStatusTextView;
     private FileHttpServer httpServer;
 
-    // Thêm biến để lưu thông tin file được truyền từ FileManageActivity
+    //Lưu data từ FileManageActivity
     private File selectedFile;
     private String filePath;
     private String fileName;
@@ -30,19 +33,19 @@ public class ShareFileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_file);
 
-        Button btnShareFile = findViewById(R.id.bthShare);
+        Button btnShareFile = findViewById(R.id.btnShare);
         fileNameTextView = findViewById(R.id.fileNameTextView);
         serverStatusTextView = findViewById(R.id.serverStatusTextView);
 
         // Nhận dữ liệu file từ FileManageActivity
         receiveFileFromIntent();
 
-        // Thiết lập sự kiện cho nút chia sẻ
+        // Nút chia sẻ
         btnShareFile.setOnClickListener(v -> {
             if (selectedFile != null && selectedFile.exists()) {
                 startHttpServer();
             } else {
-                Toast.makeText(this, "Không có file để chia sẻ!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Không có file để chia sẻ", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -56,39 +59,37 @@ public class ShareFileActivity extends AppCompatActivity{
             if (filePath != null && fileName != null) {
                 selectedFile = new File(filePath);
 
-                // Chuyển File thành URI để sử dụng với FileHttpServer
+                // Convert file thành URI
                 selectedFileUri = Uri.fromFile(selectedFile);
 
-                // Hiển thị tên file lên giao diện
                 fileNameTextView.setText(fileName);
 
-                // Cập nhật trạng thái
+                // Check file
                 if (selectedFile.exists()) {
                     serverStatusTextView.setText("Trạng thái: File sẵn sàng để chia sẻ");
                 } else {
-                    serverStatusTextView.setText("Trạng thái: Lỗi - File không tồn tại");
+                    serverStatusTextView.setText("Trạng thái: Lỗi, File lỗi");
                 }
             } else {
-                // Không có file được truyền từ FileManageActivity
+                // Lỗi nếu file không lấy đc từ FileManageActivity
                 fileNameTextView.setText("Chưa chọn file");
                 serverStatusTextView.setText("Trạng thái: Chưa có file để chia sẻ");
             }
         }
     }
 
-    private void shareFile() {
-        // Method này có thể dùng để chia sẻ qua Intent
-        if (selectedFile != null && selectedFile.exists()) {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-
-            Uri fileUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", selectedFile);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            startActivity(Intent.createChooser(shareIntent, "Chia sẻ file qua"));
-        }
-    }
+//    private void shareFile() {
+//        if (selectedFile != null && selectedFile.exists()) {
+//            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+//            shareIntent.setType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+//
+//            Uri fileUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", selectedFile);
+//            shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+//            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//            startActivity(Intent.createChooser(shareIntent, "Chia sẻ file qua"));
+//        }
+//    }
 
     private void startHttpServer() {
         try {
@@ -97,24 +98,24 @@ public class ShareFileActivity extends AppCompatActivity{
                 httpServer.stop();
             }
 
-            // Sử dụng selectedFileUri đã được khởi tạo
+            // Đẩy URI vào server
             httpServer = new FileHttpServer(port, this, selectedFileUri, fileName);
             httpServer.start();
 
-            // Lấy IP address và hiển thị URL
+            // Lấy IP cho hiển thị URL
             String ipAddress = getIPAddress();
             String serverUrl = "http://" + ipAddress + ":" + port;
 
             serverStatusTextView.setText("Server đang chạy: " + serverUrl);
-            Toast.makeText(this, "Server khởi động thành công!\nURL: " + serverUrl, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Server khởi động thành công!\nURL: " + serverUrl, Toast.LENGTH_LONG).show();
 
         } catch (IOException e) {
             serverStatusTextView.setText("Server lỗi: " + e.getMessage());
-            Toast.makeText(this, "Không thể khởi động server: " + e.getMessage(), Toast.LENGTH_LONG).show();
+           //Toast.makeText(this, "Không thể khởi động server: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    // Thêm method để lấy IP address
+    //  lấy IP
     private String getIPAddress() {
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
@@ -130,7 +131,7 @@ public class ShareFileActivity extends AppCompatActivity{
                 }
             }
         } catch (Exception e) {
-            Log.e("ShareFileActivity", "Error getting IP address", e);
+            Log.e("ShareFileActivity", "Error getting IP", e);
         }
         return "127.0.0.1";
     }

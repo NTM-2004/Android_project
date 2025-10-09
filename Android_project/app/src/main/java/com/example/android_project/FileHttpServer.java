@@ -16,7 +16,7 @@ import fi.iki.elonen.NanoHTTPD;
 public class FileHttpServer extends NanoHTTPD {
     private static final String TAG = "FileHttpServer";
     private final Context context;
-    private final Uri fileUri;
+    private final Uri fileUri; // truy cập tài nguyên qua uri
     private final String fileName;
     private final String originalFileName;
 
@@ -26,7 +26,6 @@ public class FileHttpServer extends NanoHTTPD {
         this.fileUri = fileUri;
         this.fileName = fileName;
         this.originalFileName = getOriginalFileName(context, fileUri);
-        Log.d(TAG, "Server created on port " + port + " for file: " + originalFileName);
     }
 
     private String getOriginalFileName(Context context, Uri uri) {
@@ -58,8 +57,7 @@ public class FileHttpServer extends NanoHTTPD {
         if (result == null || result.isEmpty()) {
             result = "downloaded_file";
         }
-        
-        Log.d(TAG, "Original filename determined: " + result);
+
         return result;
     }
 
@@ -69,31 +67,25 @@ public class FileHttpServer extends NanoHTTPD {
         String method = session.getMethod().toString();
         String remoteIp = session.getRemoteIpAddress();
 
-        Log.i(TAG, "Incoming request: " + method + " " + uri + " from " + remoteIp);
-
         if ("/file".equals(uri)) {
-            Log.d(TAG, "File download request for: " + originalFileName);
             try {
                 ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(fileUri, "r");
                 if (pfd == null) {
-                    Log.e(TAG, "Could not open file descriptor for URI: " + fileUri);
                     return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "File not found");
                 }
 
                 InputStream is = new FileInputStream(pfd.getFileDescriptor());
                 long fileSize = pfd.getStatSize();
 
-                Log.i(TAG, "Serving file: " + originalFileName + " (" + fileSize + " bytes) to " + remoteIp);
-
-                // Tự động detect MIME type dựa trên extension
-                String mimeType = getMimeType(originalFileName);
+                //  detect MIME type dựa trên extension
+                //String mimeType = getMimeType(originalFileName);
+                String mimeType = "application/msword";
                 
                 Response response = newFixedLengthResponse(Response.Status.OK, mimeType, is, fileSize);
                 response.addHeader("Content-Disposition", "attachment; filename=\"" + originalFileName + "\"");
                 response.addHeader("Content-Length", String.valueOf(fileSize));
                 response.addHeader("Accept-Ranges", "bytes");
 
-                Log.d(TAG, "File response created successfully with MIME type: " + mimeType);
                 return response;
 
             } catch (Exception e) {
@@ -101,8 +93,7 @@ public class FileHttpServer extends NanoHTTPD {
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/plain", "Error: " + e.getMessage());
             }
         } else {
-            Log.d(TAG, "Landing page request from " + remoteIp);
-            // Landing page with better UI
+            // landing page
             String html = "<!DOCTYPE html><html><head>" +
                     "<title>File Sharing</title>" +
                     "<meta name='viewport' content='width=device-width, initial-scale=1'>" +
@@ -114,39 +105,38 @@ public class FileHttpServer extends NanoHTTPD {
                     ".info { color: #666; font-size: 14px; margin-top: 20px; }" +
                     "</style></head><body>" +
                     "<div class='container'>" +
-                    "<h2>📁 File Sharing Server</h2>" +
-                    "<p>Server đang hoạt động thành công!</p>" +
+                    "<h2>File Sharing</h2>" +
+                    "<p>Server đang hoạt động</p>" +
                     "<a href='/file' class='download-btn'>⬇️ Tải xuống: " + originalFileName + "</a>" +
                     "<div class='info'><p>Tên file: <strong>" + originalFileName + "</strong></p></div>" +
                     "</div></body></html>";
 
-            Log.d(TAG, "Returning landing page to " + remoteIp);
             return newFixedLengthResponse(Response.Status.OK, "text/html", html);
         }
     }
     
-    private String getMimeType(String fileName) {
-        String extension = "";
-        int lastDot = fileName.lastIndexOf('.');
-        if (lastDot > 0) {
-            extension = fileName.substring(lastDot + 1).toLowerCase();
-        }
-        
-        switch (extension) {
-            case "jpg": case "jpeg": return "image/jpeg";
-            case "png": return "image/png";
-            case "gif": return "image/gif";
-            case "pdf": return "application/pdf";
-            case "txt": return "text/plain";
-            case "mp4": return "video/mp4";
-            case "mp3": return "audio/mpeg";
-            case "zip": return "application/zip";
-            case "doc": case "docx": return "application/msword";
-            case "xls": case "xlsx": return "application/vnd.ms-excel";
-            case "ppt": case "pptx": return "application/vnd.ms-powerpoint";
-            default: return "application/octet-stream";
-        }
-    }
+//    private String getMimeType(String fileName) {
+//        String extension = "";
+//        int lastDot = fileName.lastIndexOf('.');
+//        if (lastDot > 0) {
+//            extension = fileName.substring(lastDot + 1).toLowerCase();
+//        }
+//
+//        switch (extension) {
+//            case "jpg": case "jpeg": return "image/jpeg";
+//            case "png": return "image/png";
+//            case "gif": return "image/gif";
+//            case "pdf": return "application/pdf";
+//            case "txt": return "text/plain";
+//            case "mp4": return "video/mp4";
+//            case "mp3": return "audio/mpeg";
+//            case "zip": return "application/zip";
+//            case "doc": case "docx": return "application/msword";
+//            case "xls": case "xlsx": return "application/vnd.ms-excel";
+//            case "ppt": case "pptx": return "application/vnd.ms-powerpoint";
+//            default: return "application/octet-stream";
+//        }
+//    }
 
     @Override
     public void start() throws IOException {
