@@ -114,7 +114,7 @@ public class FileManageActivity extends AppCompatActivity {
         // Lọc chỉ lấy file .docx + .pdf và sắp xếp theo thời gian tạo (mới nhất trước)
         List<File> docxFiles = new ArrayList<>();
         for (File file : allFiles) {
-            if (file.isFile() && file.getName().toLowerCase().endsWith(".docx") || file.isFile() && file.getName().toLowerCase().endsWith(".pdf")) {
+            if (file.isFile() && (file.getName().toLowerCase().endsWith(".docx") || file.getName().toLowerCase().endsWith(".pdf"))) {
                 docxFiles.add(file);
             }
         }
