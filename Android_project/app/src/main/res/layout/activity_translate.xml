@@ -8,47 +8,66 @@
     android:background="@color/primary_color"
     tools:context=".TranslateActivity">
 
-  <ImageView
-      android:id="@+id/preview_image"
+  <FrameLayout
+      android:id="@+id/image_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:scaleType="fitCenter"
-      android:adjustViewBounds="true"
-      android:layout_above="@+id/controls_layout" />
+      android:layout_above="@+id/controls_layout">
+
+    <ImageView
+        android:id="@+id/preview_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true" />
+
+    <RelativeLayout
+        android:id="@+id/overlay_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+  </FrameLayout>
 
   <LinearLayout
       android:id="@+id/controls_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_above="@+id/bottom_navbar"
-      android:layout_marginBottom="0dp"
       android:background="@color/bottom_navbar_color"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:padding="10dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-      <Spinner
-          android:id="@+id/spinner_from"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@color/white"
-          android:layout_marginLeft="20dp"
-          android:layout_marginRight="20dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="10dp">
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="to"
-          android:textColor="@color/white"/>
-
+          android:text="Từ: "
+          android:textColor="@color/white"
+          android:textSize="18sp"
+          android:layout_marginRight="5dp"/>
       <Spinner
-          android:id="@+id/spinner_to"
-          android:layout_width="wrap_content"
+          android:id="@+id/spinner_source_lang"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:background="@color/white"
-          android:layout_marginLeft="20dp"/>
+          android:layout_weight="1"/>
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" sang: "
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="5dp"/>
+      <Spinner
+          android:id="@+id/spinner_target_lang"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"/>
     </LinearLayout>
 
     <Button
@@ -56,12 +75,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginRight="30dp"
         android:backgroundTint="@color/button_color"
         android:text="Dịch"
-        android:textSize="25dp" />
+        android:textSize="20sp" />
   </LinearLayout>
 
   <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgSelect;
     private ImageView imgImport;
     private ImageView pdfExport;
+    private ImageView imgTranslate;
     private Uri imageUri;
     private Uri pdfUri;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         imgSelect = findViewById(R.id.fab_camera);
         imgImport = findViewById(R.id.import_image);
+        imgTranslate = findViewById(R.id.translate_button);
         pdfExport = findViewById(R.id.export_pdf);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);
 
@@ -118,7 +120,30 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        // Xóa dòng loadWordFiles() - không hiển thị file ở MainActivity
+        imgTranslate.setOnClickListener(v ->{
+            GmsDocumentScannerOptions options = new GmsDocumentScannerOptions.Builder()
+                    .setScannerMode(SCANNER_MODE_FULL)
+                    .setGalleryImportAllowed(true)
+                    .setPageLimit(1)
+                    .setResultFormats(RESULT_FORMAT_JPEG)
+                    .build();
+
+            GmsDocumentScanner scanner = GmsDocumentScanning.getClient(options);
+
+            scanner.getStartScanIntent(MainActivity.this)
+                    .addOnSuccessListener(intentSender -> {
+                        try {
+                            startIntentSenderForResult(
+                                    intentSender,
+                                    4,
+                                    null, 0, 0, 0
+                            );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .addOnFailureListener(Throwable::printStackTrace);
+        });
     }
 
     // Method gọi sau khi có kết quả của activity
@@ -136,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
 
                 imageUri = result.getPages().get(0).getImageUri();
 
+            } else if(requestCode == 4){
+
             } else if (requestCode == 3) {
 
                 GmsDocumentScanningResult result =
@@ -149,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (imageUri != null && requestCode!=3) {
                 Intent intent = new Intent(MainActivity.this, SelectFormatActivity.class);
+                // Nếu cần mở rộng, thay = ArrayList<>
                 intent.putExtra("imageUri", imageUri.toString());
                 startActivity(intent);
             } else if (imageUri != null && requestCode==3){
@@ -163,9 +191,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Xóa auto reload - không cần hiển thị file ở MainActivity
     }
-
-    // Xóa hoàn toàn method loadWordFiles() và openWordFile()
-    // Chúng chỉ cần có trong FileManageActivity
 }

@@ -48,6 +48,9 @@ dependencies {
     //GSON for json generate
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // ML Kit Language Translation
+    implementation("com.google.mlkit:language-id:17.0.4")
+    implementation("com.google.mlkit:translate:17.0.2")
 
     //Apache POI
     implementation("org.apache.poi:poi:5.2.3")
