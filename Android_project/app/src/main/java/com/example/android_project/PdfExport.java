@@ -82,10 +82,14 @@ public class PdfExport extends AppCompatActivity {
         bottomNavigation.setOnItemSelectedListener(menuItem -> {
             int item= menuItem.getItemId();
             if(item == R.id.homePage){
-                startActivity(new Intent(this, MainActivity.class));
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 return true;
             }else if(item == R.id.filePage){
-                Intent intent = new Intent(this, FileManageActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("openFileTab", true);
                 startActivity(intent);
             }
             return false;
