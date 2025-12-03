@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.graphics.Rect;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -78,22 +76,12 @@ public class PdfExport extends AppCompatActivity {
             finish();
         }
 
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);
-        bottomNavigation.setOnItemSelectedListener(menuItem -> {
-            int item= menuItem.getItemId();
-            if(item == R.id.homePage){
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-            }else if(item == R.id.filePage){
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("openFileTab", true);
-                startActivity(intent);
-            }
-            return false;
-        });
+        // Load bottom navbar fragment
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.bottom_navbar_container, new BottomNavbarFragment())
+                    .commit();
+        }
     }
 
     @Override

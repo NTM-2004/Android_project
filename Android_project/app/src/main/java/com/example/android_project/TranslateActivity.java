@@ -76,6 +76,13 @@ public class TranslateActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Load bottom navbar fragment
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.bottom_navbar_container, new BottomNavbarFragment())
+                    .commit();
+        }
     }
 
     private void setupLanguageSpinners() {

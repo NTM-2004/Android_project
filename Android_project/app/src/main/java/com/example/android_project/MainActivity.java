@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if we should open file tab
         boolean openFileTab = getIntent().getBooleanExtra("openFileTab", false);
 
-        // Load appropriate fragment
+        // Load appropriate fragmentxxxxxxxxxxxx
         if (savedInstanceState == null) {
             if (openFileTab) {
                 loadFragment(new FileManageFragment());

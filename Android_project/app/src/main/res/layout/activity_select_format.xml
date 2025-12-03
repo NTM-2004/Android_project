@@ -21,7 +21,7 @@
         android:id="@+id/controls_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_navbar"
+        android:layout_above="@+id/bottom_navbar_container"
         android:layout_marginBottom="0dp"
         android:background="@color/bottom_navbar_color"
         android:orientation="vertical">
@@ -61,16 +61,10 @@
             android:textSize="25sp" />
     </LinearLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navbar"
+    <FrameLayout
+        android:id="@+id/bottom_navbar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/bottom_navbar_color"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        android:elevation="10dp"
-        app:menu="@menu/bottom_navigation_item"
-        app:itemActiveIndicatorStyle="@null"/>
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
