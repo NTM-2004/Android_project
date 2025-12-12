@@ -119,7 +119,7 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         // Test thành 7
                                         fontSize = (int) Math.round((7 * 72 * letterSize) / (maxRight - minLeft) + 1);
                                         // Font size theo chiều cao
-                                        fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
+                                        //fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
                                         // Ép cỡ tối thiểu
                                         //fontSize = Math.max(fontSize, 11);
                                         int spaceNumber = 0;
