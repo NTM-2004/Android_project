@@ -8,14 +8,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.graphics.Rect;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
@@ -56,13 +54,13 @@ public class SelectFormatActivity extends AppCompatActivity {
         imagePreview = findViewById(R.id.preview_image);
         Button export = findViewById(R.id.export_button);
 
-        //khởi tạo ml kit text reg
+
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
         String uriString = getIntent().getStringExtra("imageUri");
         if (uriString != null) {
             Uri imageUri = Uri.parse(uriString);
-            // hiển thị ảnh lên màn
+
             imagePreview.setImageURI(imageUri);
             export.setOnClickListener(v -> {
                 fileName = findViewById(R.id.file_name);
@@ -70,10 +68,8 @@ public class SelectFormatActivity extends AppCompatActivity {
                 fname = fileName.getText().toString();
                 if(fname.equals("")) fname = "OCR";
                 try{
-                    // Bitmap: định dạng ảnh cơ bản trong Android (dữ liệu ảnh thô)
-                    // đọc ảnh từ uri
+
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                    // dữ liệu chuẩn hóa để chạy ml kit
                     InputImage image = InputImage.fromBitmap(bitmap, 0);
 
                     recognizer.process(image)
@@ -82,7 +78,7 @@ public class SelectFormatActivity extends AppCompatActivity {
 
                                 CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
                                 CTPageMar pageMar = sectPr.addNewPgMar();
-                                // Căn lề khổ A4 (4 cạnh căn lề 1'')
+
                                 pageMar.setLeft(BigInteger.valueOf(1440));
                                 pageMar.setRight(BigInteger.valueOf(1440));
                                 pageMar.setTop(BigInteger.valueOf(1440));
@@ -95,16 +91,14 @@ public class SelectFormatActivity extends AppCompatActivity {
                                 for(Text.TextBlock block : result.getTextBlocks()){
                                     lines.addAll(block.getLines());
                                 }
-                                // Sắp xếp các line theo thứ tự .top
+
                                 lines.sort(Comparator.comparingInt(line -> line.getBoundingBox().top));
 
                                 try{
                                     Rect lastBox = null;
                                     String s = "";
                                     int fontSize = 10;
-                                    //int imageWidth = image.getWidth();
 
-                                    //Sắp xếp line theo thứ tự .left
                                     Text.Line minLine = Collections.min(lines, Comparator.comparingInt(line -> line.getBoundingBox().left));
                                     Text.Line maxLine = Collections.max(lines, Comparator.comparingInt(line -> line.getBoundingBox().right));
                                     double minLeft = minLine.getBoundingBox().left;
@@ -113,17 +107,11 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         String text = line.getText().trim();
                                         Rect box = line.getBoundingBox();
 
-                                        // cỡ chữ = chiều rộng bouding box / số chữ
                                         double letterSize = ((double)box.right - (double)box.left) / text.length();
                                         // A4 rộng 8.3'' trừ cách lề , 1pt = 1/72 inch
                                         // Test thành 7
                                         fontSize = (int) Math.round((7 * 72 * letterSize) / (maxRight - minLeft) + 1);
-                                        // Font size theo chiều cao
-                                        //fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
-                                        // Ép cỡ tối thiểu
-                                        //fontSize = Math.max(fontSize, 11);
                                         int spaceNumber = 0;
-                                        // điều kiên dòng đầu tiên
                                         if(lastBox == null){
                                             run = paragraph.createRun();
                                             run.setFontSize(fontSize);
@@ -131,7 +119,6 @@ public class SelectFormatActivity extends AppCompatActivity {
 
                                             spaceNumber = (int) Math.round((box.left - minLeft) / letterSize);
                                         }else{
-                                            // điều kiện xuống dòng (bouding box .top không cao hơn trung tâm của dòng trước)
                                             if(box.top > (lastBox.bottom + lastBox.top)/2){
                                                 run.setText(s);
                                                 s = "";
@@ -151,25 +138,9 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         }
                                         s += text;
                                         lastBox = box;
-                                        Log.d("MLkit.Log", "Text: " + text + ": " + text.length());
-                                        Log.d("MLkit.Log", "Image size: " + image.getWidth());
-                                        Log.d("MLkit.Log", "Left min: " + minLeft);
-                                        Log.d("MLkit.Log", "Right max: " + maxRight);
-                                        Log.d("MLkit.Log", "Left: " + box.left + ", right: " + box.right);
-                                        Log.d("MLkit.Log", "Letter size: " + letterSize);
-                                        Log.d("MLkit.Log", "Front size: " + fontSize);
-                                        Log.d("MLkit.Log", "Space number: " + spaceNumber);
-                                        Log.d("MLkit.Log", "*******************");
                                     }
-                                    // nhập dòng cuối
-                                    //run = paragraph.createRun();
-                                    //run.setFontSize(fontSize);
-                                    //run.setFontFamily("Courier New");
                                     run.setText(s);
 
-                                    // Tạo tên file unique dựa trên timestamp
-//                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault());
-//                                    String timestamp = sdf.format(new Date());
                                     String fileName = fname + ".docx";
                                     
                                     File file = new File(getExternalFilesDir(null), fileName);
