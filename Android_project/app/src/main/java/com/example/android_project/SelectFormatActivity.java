@@ -119,7 +119,7 @@ public class SelectFormatActivity extends AppCompatActivity {
                                         // Test thành 7
                                         fontSize = (int) Math.round((7 * 72 * letterSize) / (maxRight - minLeft) + 1);
                                         // Font size theo chiều cao
-                                        fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
+                                        //fontSize = (int) Math.round((box.height() / image.getHeight()) * 72 * 11);
                                         // Ép cỡ tối thiểu
                                         //fontSize = Math.max(fontSize, 11);
                                         int spaceNumber = 0;
@@ -194,18 +194,12 @@ public class SelectFormatActivity extends AppCompatActivity {
             Toast.makeText(this, "không nhận được ảnh", Toast.LENGTH_LONG).show();
         }
 
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navbar);
-        bottomNavigation.setOnItemSelectedListener(menuItem -> {
-            int item= menuItem.getItemId();
-            if(item == R.id.homePage){
-                startActivity(new Intent(SelectFormatActivity.this, MainActivity.class));
-                return true;
-            }else if(item == R.id.filePage){
-                Intent intent = new Intent(SelectFormatActivity.this, FileManageActivity.class);
-                startActivity(intent);
-            }
-            return false;
-        });
+        // Load bottom navbar fragment
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.bottom_navbar_container, new BottomNavbarFragment())
+                    .commit();
+        }
     }
 
     @Override

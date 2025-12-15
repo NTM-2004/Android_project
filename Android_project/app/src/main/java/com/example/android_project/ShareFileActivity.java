@@ -48,6 +48,13 @@ public class ShareFileActivity extends AppCompatActivity{
                 Toast.makeText(this, "Không có file để chia sẻ!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Load bottom navbar fragment
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.bottom_navbar_container, new BottomNavbarFragment())
+                    .commit();
+        }
     }
 
     private void receiveFileFromIntent() {

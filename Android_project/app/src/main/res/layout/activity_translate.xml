@@ -31,7 +31,7 @@
       android:id="@+id/controls_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_above="@+id/bottom_navbar"
+      android:layout_above="@+id/bottom_navbar_container"
       android:background="@color/bottom_navbar_color"
       android:orientation="vertical"
       android:padding="10dp">
@@ -54,7 +54,8 @@
           android:id="@+id/spinner_source_lang"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_weight="1"/>
+          android:layout_weight="1"
+          android:background="@color/white"/>
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +68,8 @@
           android:id="@+id/spinner_target_lang"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_weight="1"/>
+          android:layout_weight="1"
+          android:background="@color/white"/>
     </LinearLayout>
 
     <Button
@@ -81,16 +83,10 @@
         android:textSize="20sp" />
   </LinearLayout>
 
-  <com.google.android.material.bottomnavigation.BottomNavigationView
-      android:id="@+id/bottom_navbar"
+  <FrameLayout
+      android:id="@+id/bottom_navbar_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:background="@color/bottom_navbar_color"
-      app:itemIconTint="@color/white"
-      app:itemTextColor="@color/white"
-      android:elevation="10dp"
-      app:menu="@menu/bottom_navigation_item"
-      app:itemActiveIndicatorStyle="@null"/>
+      android:layout_alignParentBottom="true"/>
 
   </RelativeLayout>
