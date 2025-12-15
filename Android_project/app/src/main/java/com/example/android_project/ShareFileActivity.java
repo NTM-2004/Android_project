@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ShareFileActivity extends AppCompatActivity{
-    private static final int REQUEST_CODE_PICK_FILE = 1;
     private Uri selectedFileUri = null;
     private TextView fileNameTextView;
     private TextView serverStatusTextView;
@@ -80,20 +79,6 @@ public class ShareFileActivity extends AppCompatActivity{
         }
     }
 
-    private void shareFile() {
-        // Method này có thể dùng để chia sẻ qua Intent
-        if (selectedFile != null && selectedFile.exists()) {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-
-            Uri fileUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", selectedFile);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            startActivity(Intent.createChooser(shareIntent, "Chia sẻ file qua"));
-        }
-    }
-
     private void startHttpServer() {
         try {
             int port = 8080;
@@ -146,6 +131,4 @@ public class ShareFileActivity extends AppCompatActivity{
             httpServer.stop();
         }
     }
-
-
 }
