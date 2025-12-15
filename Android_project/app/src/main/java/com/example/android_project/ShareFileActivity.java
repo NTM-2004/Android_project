@@ -33,6 +33,10 @@ public class ShareFileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_file);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         Button btnShareFile = findViewById(R.id.bthShare);
         fileNameTextView = findViewById(R.id.fileNameTextView);
         serverStatusTextView = findViewById(R.id.serverStatusTextView);
@@ -48,13 +52,6 @@ public class ShareFileActivity extends AppCompatActivity{
                 Toast.makeText(this, "Không có file để chia sẻ!", Toast.LENGTH_SHORT).show();
             }
         });
-
-        // Load bottom navbar fragment
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.bottom_navbar_container, new BottomNavbarFragment())
-                    .commit();
-        }
     }
 
     private void receiveFileFromIntent() {
@@ -137,5 +134,11 @@ public class ShareFileActivity extends AppCompatActivity{
         if (httpServer != null) {
             httpServer.stop();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

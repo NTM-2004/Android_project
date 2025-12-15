@@ -48,6 +48,10 @@ public class TranslateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         previewImage = findViewById(R.id.preview_image);
         overlayLayout = findViewById(R.id.overlay_layout);
         sourceSpinner = findViewById(R.id.spinner_source_lang);
@@ -77,12 +81,6 @@ public class TranslateActivity extends AppCompatActivity {
             }
         });
 
-        // Load bottom navbar fragment
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.bottom_navbar_container, new BottomNavbarFragment())
-                    .commit();
-        }
     }
 
     private void setupLanguageSpinners() {
@@ -220,6 +218,12 @@ public class TranslateActivity extends AppCompatActivity {
         params.topMargin = top;
 
         overlayLayout.addView(translatedTextView, params);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
 

@@ -40,6 +40,10 @@ public class PdfExport extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_format);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         imagePreview = findViewById(R.id.preview_image);
         Button export = findViewById(R.id.export_button);
 
@@ -75,18 +79,17 @@ public class PdfExport extends AppCompatActivity {
             Toast.makeText(this, "Không nhận dữ liệu PDF hoặc ảnh", Toast.LENGTH_LONG).show();
             finish();
         }
-
-        // Load bottom navbar fragment
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.bottom_navbar_container, new BottomNavbarFragment())
-                    .commit();
-        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

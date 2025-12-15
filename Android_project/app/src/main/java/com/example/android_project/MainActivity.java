@@ -41,8 +41,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBottomNavigation() {
         bottomNavigation.setOnItemSelectedListener(menuItem -> {
-            Fragment fragment = null;
             int itemId = menuItem.getItemId();
+
+            if (itemId == bottomNavigation.getSelectedItemId()) {
+                return false; // The event is not consumed, no re-selection animation.
+            }
+
+            Fragment fragment = null;
 
             if (itemId == R.id.homePage) {
                 fragment = new HomeFragment();
